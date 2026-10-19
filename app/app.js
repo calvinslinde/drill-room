@@ -10,8 +10,9 @@ function flash(m){ $("flash").textContent=m; setTimeout(()=>{$("flash").textCont
 function post(name,body){
   try{ window.webkit.messageHandlers.saveResult.postMessage({name:name,body:body}); return true; }
   catch(e){
-    try{ fetch("/save",{method:"POST",headers:{"Content-Type":"application/json"},
-         body:JSON.stringify({name,body})}).catch(()=>{}); return true; }catch(e2){ return false; }
+    try{ const local = location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname);
+         if(local){ fetch("/save",{method:"POST",headers:{"Content-Type":"application/json"},
+           body:JSON.stringify({name,body})}).catch(()=>{}); } return true; }catch(e2){ return false; }
   }
 }
 
