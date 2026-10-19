@@ -203,6 +203,7 @@ $("pt").addEventListener("click",e=>{ if(e.target.id==="pt") ptOpen(false); });
 
 // ---- Real MCAT keyboard shortcuts ----
 document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ ptOpen(false); $("nav").classList.add("hide"); $("sheet").classList.add("hide"); return; }
   if($("exam").classList.contains("hide")) return;
   const t=e.target.tagName; if(t==="INPUT"||t==="TEXTAREA") return;
   const k=e.key.toLowerCase();
