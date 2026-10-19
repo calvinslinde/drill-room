@@ -8,7 +8,7 @@ I built it for my own MCAT preparation in 2026 and packaged it so my brother cou
 
 **Use it in your browser: https://calvinslinde.github.io/drill-room/** (GitHub Pages serves the same `app/` folder). Or download the repository and open `app/index.html`, or serve the `app/` folder with `python3 -m http.server`. Either way everything is local: no accounts, nothing is sent anywhere, and progress is saved in your own browser.
 
-- 19 passage sets across the four sections (B/B, C/P, P/S, CARS), in the real interface shape: a passage, six or so questions, a timer, review.
+- 22 passage sets across the four sections (B/B, C/P, P/S, CARS), in the real interface shape: a passage, six or so questions, a timer, review.
 - The science passages are original, written to AAMC's published length and structure. The CARS passages are public-domain prose (Veblen, Boas, Addams, Pater) cut to AAMC length, with original questions.
 - Each set carries per-choice reasoning (`app/whys.js`) and the explanations that came out of reviewing mistakes (`app/notes.js`).
 
