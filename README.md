@@ -30,7 +30,7 @@ python3 tools/plausibility.py app      # dead distractors (the largest single ef
 python3 tools/rebalance_keys.py app    # permute choices so the key is evenly distributed (rewrites files)
 ```
 
-Run them on any folder of `sets*.js` files. `tools/import_cars_sets.py` converts CARS sets you have extracted yourself; no third-party sets are included here.
+Run them on any folder of `sets*.js` files; with no argument they run on `app/`. No third-party question sets are included here.
 
 `bash selftest.sh` runs the four checkers on the included bank and fails if any of them errors.
 
