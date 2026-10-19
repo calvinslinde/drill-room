@@ -4,6 +4,8 @@ Drill Room is an MCAT passage practice app that runs from a folder. It has its o
 
 I made it for my own MCAT prep in 2026 and packaged it so my brother could run it. This is the version anyone can run.
 
+![The Drill Room home screen: the passage bank, progress, and the sets by section](docs/screenshot.png)
+
 ## The app
 
 **Use it in your browser: https://calvinslinde.github.io/drill-room/** (GitHub Pages serves the same `app/` folder). Or download the repository and open `app/index.html`, or serve the `app/` folder with `python3 -m http.server`. Either way everything is local: no accounts, nothing is sent anywhere, and progress is saved in your own browser.
