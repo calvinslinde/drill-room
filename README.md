@@ -6,7 +6,7 @@ I built it for my own MCAT preparation in 2026 and packaged it so my brother cou
 
 ## The app
 
-Open `app/index.html` in a browser (or serve the `app/` folder with `python3 -m http.server`). Everything is local: no accounts, no network. Progress is saved in the browser.
+**Use it in your browser: https://calvinslinde.github.io/drill-room/** (GitHub Pages serves the same `app/` folder). Or download the repository and open `app/index.html`, or serve the `app/` folder with `python3 -m http.server`. Either way everything is local: no accounts, nothing is sent anywhere, and progress is saved in your own browser.
 
 - 19 passage sets across the four sections (B/B, C/P, P/S, CARS), in the real interface shape: a passage, six or so questions, a timer, review.
 - The science passages are original, written to AAMC's published length and structure. The CARS passages are public-domain prose (Veblen, Boas, Addams, Pater) cut to AAMC length, with original questions.
