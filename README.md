@@ -1,6 +1,6 @@
 # Drill Room
 
-Drill Room is an MCAT passage practice app that runs from a folder. It has its own passage sets and the tools I used to check that the questions were actually fair, using the item-writing rules the real exam follows.
+Drill Room is an MCAT passage practice app that runs from a folder. It has its own passage sets and the tools I used to check that the questions were really fair, using the item-writing rules the real exam follows.
 
 I made it for my own MCAT prep in 2026 and packaged it so my brother could run it. This is the version anyone can run.
 
