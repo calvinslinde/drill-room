@@ -20,7 +20,7 @@ Usage:  python3 passagecheck.py [build_dir]
 """
 import re, sys, os, glob, statistics
 
-BUILD = os.path.expanduser("~/DrillRoom/build")
+BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app")
 _a = [a for a in sys.argv[1:] if not a.startswith("--")]
 if _a: BUILD = _a[0]
 

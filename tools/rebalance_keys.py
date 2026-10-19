@@ -16,7 +16,7 @@ Without --apply it reports what it would do and writes nothing.
 """
 import re, sys, os, glob, random, collections, shutil
 
-BUILD = os.path.expanduser("~/DrillRoom/build")
+BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app")
 APPLY = "--apply" in sys.argv
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 if args:

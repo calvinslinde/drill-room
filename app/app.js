@@ -7,12 +7,14 @@ function save(){ try{ localStorage.setItem(KEY,JSON.stringify(P)); }catch(e){} }
 function daysLeft(){ return Math.max(Math.ceil((new Date(EXAM_DATE+"T08:00:00")-new Date())/86400000),0); }
 function view(v){ ["home","exam","res"].forEach(x=>$(x).classList.toggle("hide",x!==v)); }
 function flash(m){ $("flash").textContent=m; setTimeout(()=>{$("flash").textContent="";},9000); }
+const LOCAL = location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname);
 function post(name,body){
   try{ window.webkit.messageHandlers.saveResult.postMessage({name:name,body:body}); return true; }
   catch(e){
-    try{ const local = location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname);
-         if(local){ fetch("/save",{method:"POST",headers:{"Content-Type":"application/json"},
-           body:JSON.stringify({name,body})}).catch(()=>{}); } return true; }catch(e2){ return false; }
+    try{ if(LOCAL){ fetch("/save",{method:"POST",headers:{"Content-Type":"application/json"},
+           body:JSON.stringify({name,body})}).catch(()=>{}); }
+         else { const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([body],{type:"text/plain"})); a.download=name.replace(/^_/,""); document.body.appendChild(a); a.click(); a.remove(); }
+         return true; }catch(e2){ return false; }
   }
 }
 
@@ -58,7 +60,7 @@ function paintHome(){
   if(missing.length){
     const d=document.createElement("div"); d.className="panel";
     d.innerHTML=`<div class="ph"><h2>Not yet written</h2></div>
-      <div class="empty">${missing.map(m=>m.n).join("<br>")}<br><br>Ask in chat and these get written next.</div>`;
+      <div class="empty">${missing.map(m=>m.n).join("<br>")}<br><br>No sets for these sections in this copy.</div>`;
     bank.appendChild(d);
   }
 
@@ -84,7 +86,7 @@ document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on")); t.classList.add("on");
   ["bank","notes","sheets"].forEach(k=>$("tab"+k[0].toUpperCase()+k.slice(1)).classList.toggle("hide",k!==t.dataset.t));
 });
-$("bNextSet").onclick=()=>{ const s=SETS.find(x=>!(P[x.id]&&P[x.id].done)); if(s) begin(s); else flash("Every set is done. Ask for more in chat."); };
+$("bNextSet").onclick=()=>{ const s=SETS.find(x=>!(P[x.id]&&P[x.id].done)); if(s) begin(s); else flash("Every set is done."); };
 $("bReset").onclick=()=>{ if(confirm("Clear all results?")){ P={}; save(); paintHome(); } };
 $("bExport").onclick=()=>{
   let o=`DRILL ROOM — PROGRESS\nDays to exam: ${daysLeft()}\n\n`;
@@ -92,7 +94,7 @@ $("bExport").onclick=()=>{
     o+= r&&r.done
       ? `${s.sec} — ${s.topic}: ${r.score}/${r.total} (${Math.round(r.score/r.total*100)}%) solid=${r.solid} lucky=${r.lucky} shaky=${r.shaky}${r.misses&&r.misses.length?` [${r.misses.join(" ")}]`:""}\n`
       : `${s.sec} — ${s.topic}: not started\n`; });
-  post("_progress.txt",o); flash("Exported to ~/DrillRoom/results — say “check my results” in chat.");
+  post("_progress.txt",o); flash(LOCAL ? "Exported to the results folder." : "Progress downloaded as a text file.");
 };
 
 /* ================= SHEET OVERLAY ================= */
@@ -311,7 +313,7 @@ function grade(){
         if(!txt){
           txt = ci===q.a
             ? "<strong>This is the correct answer.</strong> See the full explanation below for the reasoning."
-            : "<strong>Incorrect.</strong> A per-choice note has not been written for this one yet &mdash; the full explanation below names the trap. Ask in chat and I'll add it.";
+            : "<strong>Incorrect.</strong> The explanation below names the trap.";
         }
         box.innerHTML=txt; box.dataset.filled="1";
       }
@@ -347,7 +349,7 @@ function persist(){
 $("zSave").onclick=()=>{
   persist();
   E=null; $("tSect").textContent="Passage bank"; view("home"); paintHome();
-  flash("Saved to ~/DrillRoom/results. Say “check my results” in chat.");
+  flash("Saved in this browser.");
 };
 
 

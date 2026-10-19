@@ -510,7 +510,7 @@ students' learning with effective learning techniques: Promising directions from
 educational psychology. *Psychological Science in the Public Interest*, 14(1), 4–58.
 DOI: 10.1177/1529100612453266. PMID: 26173288.**
 
-### 5.1 The first thing to say honestly: concept mapping is not one of the ten
+### 5.1 First: concept mapping is not one of the ten
 
 The monograph evaluates ten techniques: elaborative interrogation, self-explanation, summarization,
 highlighting/underlining, the keyword mnemonic, imagery use for text learning, rereading, practice

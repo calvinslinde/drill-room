@@ -22,7 +22,7 @@ Usage:  python3 flawcheck.py [build_dir] [--verbose]
 """
 import re, sys, os, glob, collections, statistics
 
-BUILD = os.path.expanduser("~/DrillRoom/build")
+BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app")
 VERBOSE = "--verbose" in sys.argv
 _a = [a for a in sys.argv[1:] if not a.startswith("--")]
 if _a: BUILD = _a[0]

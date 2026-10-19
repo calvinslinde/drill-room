@@ -9,7 +9,7 @@ Usage:  python3 lint_items.py [build_dir]
 """
 import re, sys, os, glob, statistics, collections
 
-BUILD = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/DrillRoom/build")
+BUILD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app")
 
 ABSOLUTE = re.compile(r'\b(always|never|all|none|only|must|cannot|every|no\s+\w+\s+(?:can|is|are)|entirely|exclusively|impossible|invariably|solely)\b', re.I)
 HEDGE    = re.compile(r'\b(may|can|often|some|usually|tends?|partly|primarily|generally|likely|typically)\b', re.I)
