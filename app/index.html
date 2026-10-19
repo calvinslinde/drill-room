@@ -1,0 +1,393 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Drill Room</title>
+<style>
+:root{
+  --nav:#1B3A5C; --pg:#FFFFFF; --shell:#E8EAED; --ink:#000; --soft:#3A3A3A; --faint:#6B6B6B;
+  --line:#B7BEC6; --line2:#8B949E; --sel:#CFE3F5; --selBd:#2E6DA4; --hl:#FFF07A; --flag:#C8102E;
+  --ok:#1E7A3C; --okBg:#E3F1E7; --warn:#8A6100; --warnBg:#FBF0D6; --bad:#B3261E; --badBg:#F9E2E0;
+  --f:Arial,Helvetica,sans-serif; --fs:"Times New Roman",Times,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--f);font-size:14px;line-height:1.45;background:var(--shell);color:var(--ink);overflow:hidden;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.hide{display:none!important}
+#root{height:100vh;display:flex;flex-direction:column}
+
+/* top bar — always the exam chrome */
+#top{background:var(--nav);color:#fff;height:46px;flex:0 0 46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:12px}
+#top .l{display:flex;align-items:center;gap:14px;min-width:0}
+#top .bd{font-weight:700;font-size:12.5px;letter-spacing:.06em;opacity:.92}
+#top .sc{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#top .r{display:flex;align-items:center;gap:15px;white-space:nowrap}
+#clk{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;gap:6px;align-items:center}
+#clk.low{color:#FFC9C2}
+
+/* ===== HOME (exam selection) ===== */
+#home{flex:1;overflow-y:auto;background:var(--shell)}
+.hin{max-width:900px;margin:0 auto;padding:30px 22px 70px}
+.panel{background:var(--pg);border:1px solid var(--line);margin-bottom:18px}
+.ph{background:#EDEFF1;border-bottom:1px solid var(--line);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ph h2{font-size:14px;font-weight:700}
+.ph .meta{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+.pb{padding:0}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid #E4E7EA;text-align:left;width:100%}
+.row:last-child{border-bottom:none}
+.row:hover{background:#F3F7FB}
+.row .t{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.row .s{display:block;font-size:12.5px;color:var(--faint);margin-top:3px}
+.row .qn{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;white-space:nowrap;border-radius:2px}
+.b-new{background:#EDEFF1;color:var(--faint)}
+.b-ok{background:var(--okBg);color:var(--ok)}
+.b-mid{background:var(--warnBg);color:var(--warn)}
+.b-bad{background:var(--badBg);color:var(--bad)}
+.hero{background:var(--pg);border:1px solid var(--line);padding:20px 22px;margin-bottom:18px}
+.hero h1{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.01em}
+.hero p{font-size:13.5px;color:var(--soft);max-width:66ch;margin-bottom:14px}
+.stats2{display:flex;gap:26px;flex-wrap:wrap;border-top:1px solid #E4E7EA;padding-top:14px}
+.s2{display:flex;flex-direction:column}
+.s2 .v{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.s2 .l{font-size:11.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{padding:8px 18px;font-size:13px;font-weight:700;border:1px solid var(--line2);background:#F2F4F6;border-radius:2px}
+.btn:hover{background:#fff}
+.btn.pri{background:var(--nav);border-color:var(--nav);color:#fff}
+.btn.pri:hover{filter:brightness(1.12)}
+#flash{font-size:12.5px;color:var(--ok);font-weight:600;margin-top:10px;min-height:16px}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:18px;background:var(--pg)}
+.tab{padding:11px 20px;font-size:13.5px;font-weight:600;border-bottom:3px solid transparent;color:var(--faint)}
+.tab.on{color:var(--nav);border-bottom-color:var(--nav);background:#F7FAFD}
+.tab:hover{background:#F3F7FB}
+.note{background:#F7F9FB;border:1px solid var(--line);padding:14px 16px;margin-bottom:10px}
+.note h3{font-size:14px;font-weight:700;margin-bottom:5px}
+.note .d{font-size:11.5px;color:var(--faint);margin-bottom:9px}
+.note .bdy{font-size:13.5px;line-height:1.6;color:var(--soft)}
+.note .bdy strong{color:var(--ink)}
+.note .bdy p{margin-bottom:9px}
+.empty{padding:34px 18px;text-align:center;color:var(--faint);font-size:13.5px}
+
+/* ===== EXAM ===== */
+#exam{flex:1;display:flex;flex-direction:column;background:var(--pg)}
+#ebody{flex:1;display:flex;min-height:0}
+#pass{flex:0 0 50%;overflow-y:auto;padding:18px 20px 34px;background:var(--pg)}
+#sp{flex:0 0 6px;background:#D9DDE1;cursor:col-resize;position:relative;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+#sp::after{content:"";position:absolute;top:50%;left:1px;width:2px;height:38px;background:var(--line2);transform:translateY(-50%)}
+#qp{flex:1;overflow-y:auto;padding:18px 22px 34px;min-width:0}
+#ebody.np #pass,#ebody.np #sp{display:none}
+#ebody.np #qp{max-width:840px;margin:0 auto}
+#pass p{font-family:var(--fs);font-size:16px;line-height:1.55;margin-bottom:12px}
+#pass .ttl{font-family:var(--f);font-weight:700;font-size:13px;margin-bottom:12px}
+#pass table{border-collapse:collapse;margin:14px 0;font-size:13px;font-family:var(--f)}
+#pass th,#pass td{border:1px solid var(--ink);padding:5px 9px;text-align:left}
+#pass th{font-weight:700;background:#EDEFF1}
+#pass td.n{text-align:center;font-variant-numeric:tabular-nums}
+#pass .cap{font-family:var(--f);font-size:12.5px;margin-bottom:12px}
+#pass .fig{border:1px solid var(--line);padding:10px;margin:14px 0;background:#FAFBFC}
+.hl{background:var(--hl)}
+body.hlmode #pass,body.hlmode #qtx,body.hlmode #opts{cursor:crosshair}
+.stk{font-size:10px;color:var(--faint);display:inline-flex;align-items:center;gap:3px;margin:0 8px 0 -4px;cursor:pointer}
+.stk input{margin:0}
+#clk{cursor:pointer}
+#clkT.hid{visibility:hidden}
+#pt{position:fixed;inset:0;background:rgba(16,24,38,.55);z-index:60;display:flex;align-items:center;justify-content:center}
+.ptin{background:#fff;border:1px solid var(--line2);box-shadow:0 18px 60px rgba(0,0,0,.3);max-width:min(1180px,96vw);max-height:92vh;overflow:auto}
+.pth{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-weight:700;font-size:13px;background:#F4F5F7;position:sticky;top:0}
+.ptx{font:inherit;font-size:12px;padding:3px 10px;border:1px solid var(--line2);background:#fff;cursor:pointer}
+.ptg{display:grid;grid-template-columns:repeat(18,1fr);gap:2px;padding:12px}
+.pel{border:1px solid #C8CFD8;padding:3px 2px;text-align:center;line-height:1.15;background:#fff;min-width:0}
+.pel .z{font-size:8.5px;color:#5A6472}
+.pel .sy{font-size:13px;font-weight:700}
+.pel .m{font-size:7.5px;color:#5A6472;font-variant-numeric:tabular-nums}
+.pspacer{grid-column:1/-1;height:8px}
+body.hlmode .hl{cursor:pointer}
+body.hlmode .hl:hover{background:#F5D77A;box-shadow:inset 0 0 0 1px #D9AE3C}
+.qh{display:flex;justify-content:space-between;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.qno{font-weight:700;font-size:14px}
+.fbx{display:flex;gap:6px;align-items:center;font-size:12.5px;cursor:pointer;user-select:none}
+.fbx.on{color:var(--flag);font-weight:700}
+.qt{font-family:var(--fs);font-size:16px;line-height:1.5;margin-bottom:16px}
+.opt{display:grid;grid-template-columns:22px 20px 1fr;gap:8px;align-items:start;padding:7px 9px;border:1px solid transparent;border-radius:2px;text-align:left;font-family:var(--fs);font-size:15.5px;line-height:1.45;width:100%;margin-bottom:2px}
+.opt:hover{background:#F0F4F8}
+.opt .rd{width:15px;height:15px;border:1.5px solid var(--line2);border-radius:50%;margin-top:3px;background:#fff;position:relative}
+.opt.sel .rd{border-color:var(--selBd)}
+.opt.sel .rd::after{content:"";position:absolute;inset:2.5px;border-radius:50%;background:var(--selBd)}
+.opt .lt{font-family:var(--f);font-weight:700;font-size:14px;padding-top:2px}
+.opt.sel{background:var(--sel);border-color:var(--selBd)}
+.opt.st .tx,.opt.st .lt{text-decoration:line-through;color:#9AA0A6}
+body.strike .opt{cursor:crosshair}
+body.strike .opt:hover{background:#FBEAE8}
+#conf{margin-top:22px;border:1px solid var(--line);border-top:3px solid var(--nav);background:#F7F9FB;padding:11px 13px}
+#conf .cl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+#conf .cr{display:flex;gap:6px;flex-wrap:wrap}
+#conf button{flex:1;min-width:118px;padding:7px 8px;border:1px solid var(--line2);background:#fff;font-size:13px;font-weight:600;border-radius:2px}
+#conf button:hover{background:#EEF2F6}
+#conf button.on[data-c=sure]{background:var(--okBg);border-color:var(--ok);color:var(--ok)}
+#conf button.on[data-c=two]{background:var(--warnBg);border-color:var(--warn);color:var(--warn)}
+#conf button.on[data-c=guess]{background:var(--badBg);border-color:var(--bad);color:var(--bad)}
+#conf .nt{font-size:11.5px;color:var(--faint);margin-top:7px}
+#ftr{background:var(--nav);color:#fff;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;gap:10px}
+.tools{display:flex;gap:2px;overflow-x:auto}
+.tl{padding:6px 11px;font-size:12.5px;border-radius:2px;white-space:nowrap;opacity:.92}
+.tl:hover{background:rgba(255,255,255,.14);opacity:1}
+.tl.on{background:#fff;color:var(--nav);font-weight:700;opacity:1}
+.mvs{display:flex;gap:6px}
+.mv{padding:7px 17px;font-size:13px;font-weight:700;border-radius:2px;background:#F2F4F6;color:var(--nav)}
+.mv:hover{background:#fff}
+.mv:disabled{opacity:.4;cursor:not-allowed}
+
+/* ===== RESULT ===== */
+#res{flex:1;overflow-y:auto;background:var(--shell)}
+.rin{max-width:880px;margin:0 auto;padding:30px 22px 70px}
+#res h1{font-size:26px;font-weight:700;margin-bottom:8px}
+#res .ld{font-family:var(--fs);font-size:16px;color:var(--soft);margin-bottom:22px;line-height:1.5}
+#res h2{font-size:15px;font-weight:700;margin-bottom:11px}
+.sts{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}
+.st{flex:1;min-width:126px;border:1px solid var(--line);padding:12px 14px;background:var(--pg)}
+.st .v{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.st .l{font-size:12px;color:var(--faint);margin-top:5px}
+.st.al .v{color:var(--bad)}
+.br{display:grid;grid-template-columns:126px 1fr 44px;gap:10px;align-items:center;font-size:13px;margin-bottom:7px}
+.trk{height:9px;background:#DDE1E5;overflow:hidden}
+.fl{height:100%}
+.br .n{text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--soft)}
+.vd{background:var(--pg);border-left:4px solid var(--nav);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 16px;font-size:14px;line-height:1.55;color:var(--soft);margin:18px 0 22px}
+.vd strong{color:var(--ink)}
+.rq{border:1px solid var(--line);margin-bottom:11px;background:var(--pg)}
+.rqh{background:#EDEFF1;padding:8px 12px;display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.rqh .id{font-weight:700;font-size:13px}
+.pl{font-size:11px;font-weight:700;padding:2px 7px;letter-spacing:.04em}
+.p-ok{background:var(--okBg);color:var(--ok)}.p-bad{background:var(--badBg);color:var(--bad)}.p-lk{background:var(--warnBg);color:var(--warn)}
+.rqb{padding:12px;display:flex;flex-direction:column;gap:10px}
+.rqb .q2{font-family:var(--fs);font-size:15px;line-height:1.45}
+.rqb .yr{font-size:13px;color:var(--soft)}.rqb .yr b{color:var(--ink)}
+.ex{font-size:13.5px;line-height:1.55;color:var(--soft);background:#F7F9FB;padding:11px 13px;border-left:3px solid var(--nav)}
+.ex strong{color:var(--ink)}
+.tgr{border-top:1px solid var(--line);padding-top:10px}
+.tgr .l{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+.tgs{display:flex;gap:5px;flex-wrap:wrap}
+.tg{padding:5px 9px;border:1px solid var(--line2);font-size:12.5px;background:#fff}
+.tg:hover{background:#EEF2F6}.tg.on{background:var(--nav);border-color:var(--nav);color:#fff;font-weight:600}
+
+#nav{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:60}
+#nav .bx{background:#fff;max-width:620px;width:100%;max-height:78vh;display:flex;flex-direction:column}
+#nav .bh{background:var(--nav);color:#fff;padding:10px 14px;font-weight:700;font-size:14px;display:flex;justify-content:space-between}
+#nav .bb{padding:14px;overflow-y:auto}
+#nav table{border-collapse:collapse;width:100%;font-size:13px}
+#nav th,#nav td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+#nav th{background:#EDEFF1;font-weight:700}
+#nav tr[data-k]{cursor:pointer}#nav tr[data-k]:hover td{background:#EEF4FA}
+#nav .bf{padding:10px 14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+
+
+
+/* review: passage + per-choice explanations */
+#zPass{margin-bottom:20px;border:1px solid var(--line);background:var(--pg)}
+#zPass .zph{background:#EDEFF1;border-bottom:1px solid var(--line);padding:9px 14px;display:flex;
+  justify-content:space-between;align-items:center;cursor:pointer;font-size:13px;font-weight:700}
+#zPass .zpb{padding:14px 16px 18px;max-height:420px;overflow-y:auto}
+#zPass.closed .zpb{display:none}
+#zPass p{font-family:var(--fs);font-size:15px;line-height:1.55;margin-bottom:11px}
+#zPass table{border-collapse:collapse;margin:12px 0;font-size:12.5px;font-family:var(--f)}
+#zPass th,#zPass td{border:1px solid var(--ink);padding:4px 8px;text-align:left}
+#zPass th{background:#EDEFF1;font-weight:700}
+#zPass td.n{text-align:center}
+#zPass .ttl{font-family:var(--f);font-weight:700;font-size:12.5px;margin-bottom:10px}
+#zPass .cap{font-family:var(--f);font-size:12px;margin-bottom:10px}
+.rchoices{display:flex;flex-direction:column;gap:3px;margin:4px 0 2px}
+.rch{border:1px solid var(--line);background:#fff;text-align:left;padding:8px 10px;
+  display:grid;grid-template-columns:18px 1fr auto;gap:9px;align-items:start;font-family:var(--fs);
+  font-size:14.5px;line-height:1.45;width:100%}
+.rch:hover{background:#F3F7FB}
+.rch .l{font-family:var(--f);font-weight:700;font-size:13px}
+.rch .tag{font-family:var(--f);font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 6px;white-space:nowrap;align-self:center}
+.rch.correct{background:var(--okBg);border-color:var(--ok)}
+.rch.correct .tag{background:var(--ok);color:#fff}
+.rch.yours{border-color:var(--bad);background:var(--badBg)}
+.rch.yours .tag{background:var(--bad);color:#fff}
+.rch.both{background:var(--okBg);border-color:var(--ok)}
+.rwhy{font-family:var(--f);font-size:13px;line-height:1.55;color:var(--soft);background:#F7F9FB;
+  border-left:3px solid var(--line2);padding:9px 12px;margin:1px 0 4px}
+.rwhy.good{border-left-color:var(--ok)}
+.rwhy.bad{border-left-color:var(--bad)}
+.rwhy strong{color:var(--ink)}
+.exfull{font-size:13.5px;line-height:1.6;color:var(--soft);background:#F2F6FA;padding:12px 14px;
+  border-left:3px solid var(--nav);margin-top:8px}
+.exfull strong{color:var(--ink)}
+.exfull .h{font-family:var(--f);font-size:10.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+#paused{position:fixed;inset:0;background:rgba(20,32,45,.97);z-index:95;display:flex;
+  align-items:center;justify-content:center;color:#fff}
+#paused .pbox{text-align:center;max-width:420px;padding:20px}
+#paused .pttl{font-size:34px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+#paused .psub{font-size:14px;opacity:.75;margin-bottom:26px}
+#paused .pclk{font-size:46px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+#paused .plbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.09em;opacity:.6;margin:6px 0 26px}
+#paused .btn.pri{background:#fff;color:#1B3A5C;border-color:#fff;padding:11px 26px;font-size:14px}
+#pad{position:fixed;right:22px;bottom:64px;width:330px;background:#FFFDF0;border:1px solid var(--line2);
+  box-shadow:0 6px 26px rgba(0,0,0,.28);z-index:80;display:flex;flex-direction:column}
+.padh{background:var(--nav);color:#fff;padding:7px 11px;font-size:12.5px;font-weight:700;display:flex;
+  justify-content:space-between;align-items:center;cursor:move;user-select:none}
+.padh button{color:#fff;font-size:17px;line-height:1}
+#padTxt{border:none;outline:none;resize:vertical;min-height:150px;padding:10px 11px;font-family:var(--fs);
+  font-size:15px;line-height:1.5;background:#FFFDF0;color:#000}
+.calcwrap{border-top:1px solid var(--line);padding:9px 10px;background:#F4F5F7}
+.calcnote{font-size:10.5px;color:var(--faint);margin-bottom:6px}
+.calcnote b{color:var(--bad)}
+#calcIn{width:100%;padding:6px 8px;font-family:var(--f);font-size:14px;border:1px solid var(--line2);background:#fff}
+.calcout{text-align:right;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;padding:4px 2px 7px;min-height:26px}
+.keys{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.keys button{padding:7px 0;font-size:13.5px;font-weight:600;background:#fff;border:1px solid var(--line2);border-radius:2px}
+.keys button:hover{background:#EEF2F6}
+.keys .eq{grid-column:span 5;background:var(--nav);color:#fff;border-color:var(--nav)}
+#sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;display:flex;flex-direction:column;padding:18px}
+#sheet .sh{display:flex;justify-content:space-between;align-items:center;color:#fff;margin-bottom:10px;font-size:13px;font-weight:600}
+#sheet .sb{flex:1;overflow:auto;display:flex;justify-content:center;background:#5A6470}
+#sheet img{max-width:min(1100px,100%);height:auto;background:#fff}
+</style></head>
+<body><div id="root">
+
+<div id="top">
+  <div class="l"><span class="bd">DRILL ROOM</span><span class="sc" id="tSect">Passage bank</span></div>
+  <div class="r"><span id="tCount"></span>
+    <span id="clk" class="hide"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="clkT">--:--</span></span>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home"><div class="hin">
+  <div class="hero">
+    <h1>Passage Bank</h1>
+    <p>AAMC-format passages with the real interface and toolset. Finish a set, then bring the result back to chat — what you got wrong becomes an explanation that lands back here under Notes.</p>
+    <div class="stats2">
+      <div class="s2"><span class="v" id="sDone">0</span><span class="l">Sets done</span></div>
+      <div class="s2"><span class="v" id="sQs">0</span><span class="l">Questions</span></div>
+      <div class="s2"><span class="v" id="sAcc">—</span><span class="l">Accuracy</span></div>
+      <div class="s2"><span class="v" id="sSolid">—</span><span class="l">Solid</span></div>
+      <div class="s2"><span class="v" id="sDays">—</span><span class="l">Days to exam</span></div>
+    </div>
+    <div class="acts">
+      <button class="btn pri" id="bNextSet">Start next set</button>
+      <a class="btn" href="scan.html" style="text-decoration:none;display:inline-block">CARS scan drills</a>
+      <button class="btn" id="bExport">Export progress</button>
+      <button class="btn" id="bReset">Reset</button>
+    </div>
+    <div id="flash"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-t="bank">Passages</button>
+    <button class="tab" data-t="notes">Notes</button>
+    <button class="tab" data-t="sheets">Review sheets</button>
+  </div>
+  <div id="tabBank"></div>
+  <div id="tabNotes" class="hide"></div>
+  <div id="tabSheets" class="hide"></div>
+</div></div>
+
+<!-- EXAM -->
+<div id="exam" class="hide">
+  <div id="ebody">
+    <div id="pass"></div><div id="sp"></div>
+    <div id="qp">
+      <div class="qh"><span class="qno" id="qno"></span>
+        <label class="fbx" id="fLbl"><input type="checkbox" id="fChk"> Flag for Review</label></div>
+      <div class="qt" id="qtx"></div>
+      <div id="opts"></div>
+      <div id="conf">
+        <div class="cl">Before advancing — how did you get that?</div>
+        <div class="cr">
+          <button data-c="sure">Knew it</button>
+          <button data-c="two">Narrowed to two</button>
+          <button data-c="guess">Guessed</button>
+        </div>
+        <div class="nt">Required. A guess that lands right is a gap, not a point.</div>
+      </div>
+    </div>
+  </div>
+  <div id="ftr">
+    <div class="tools">
+      <button class="tl" id="tNav">Navigator</button>
+      <button class="tl" id="tHl">Highlight</button><label class="stk" title="Not on the real exam — practice aid"><input type="checkbox" id="hlStick"> sticky</label>
+      <button class="tl" id="tUn">Clear</button>
+      <button class="tl" id="tSt">Strikethrough</button><button class="tl" id="tPt">Periodic Table</button>
+      <button class="tl" id="tPause">Pause</button>
+      <button class="tl" id="tPad">Noteboard</button>
+      <button class="tl" id="tSheet">Review sheet</button>
+      <button class="tl" id="tEnd">End Section</button>
+    </div>
+    <div class="mvs"><button class="mv" id="bPrev">Previous</button><button class="mv" id="bNext">Next</button></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="res" class="hide"><div class="rin">
+  <h1 id="zT"></h1><p class="ld" id="zL"></p>
+  <div style="background:#E3F1E7;border:1px solid #1E7A3C;color:#1E7A3C;padding:9px 13px;font-size:13px;font-weight:600;margin-bottom:18px">Saved automatically to ~/DrillRoom/results — tag your misses below, then say &ldquo;check my results&rdquo; in chat.</div>
+  <div class="sts" id="zS"></div>
+  <h2>Accuracy by stated confidence</h2><div id="zB"></div>
+  <div class="vd" id="zV"></div>
+  <div id="zPass"></div>
+  <h2>Question review</h2>
+  <p style="font-size:13px;color:var(--faint);margin:-6px 0 12px">Click any answer choice to see why it is right or wrong.</p>
+  <div id="zList"></div>
+  <div style="margin-top:22px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn pri" id="zSave">Save result &amp; return</button>
+  </div>
+</div></div>
+
+</div>
+
+<div id="nav" class="hide"><div class="bx">
+  <div class="bh"><span>Review Screen</span><button id="nX" style="color:#fff;font-size:19px;line-height:1">&times;</button></div>
+  <div class="bb"><table id="nT"></table></div>
+  <div class="bf"><button class="btn" id="nC">Return</button></div>
+</div></div>
+
+
+<div id="paused" class="hide">
+  <div class="pbox">
+    <div class="pttl">Paused</div>
+    <div class="psub">The clock is stopped and the question is hidden.</div>
+    <div class="pclk" id="pClk">0:00</div>
+    <div class="plbl">paused this break</div>
+    <button class="btn pri" id="pResume">Resume section</button>
+  </div>
+</div>
+
+<div id="pad" class="hide">
+  <div class="padh" id="padDrag"><span>Noteboard</span><button id="padX">&times;</button></div>
+  <textarea id="padTxt" spellcheck="false" placeholder="Scratch work — this is what the real exam gives you."></textarea>
+  <div class="calcwrap">
+    <div class="calcnote">Calculator — <b>not available on the real MCAT</b></div>
+    <input id="calcIn" placeholder="e.g. 110/20" spellcheck="false">
+    <div class="calcout" id="calcOut">&nbsp;</div>
+    <div class="keys">
+      <button>7</button><button>8</button><button>9</button><button>/</button><button data-k="C">C</button>
+      <button>4</button><button>5</button><button>6</button><button>*</button><button data-k="back">&larr;</button>
+      <button>1</button><button>2</button><button>3</button><button>-</button><button data-k="pow">^</button>
+      <button>0</button><button>.</button><button>(</button><button>)</button><button>+</button>
+      <button data-k="eq" class="eq">=</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet" class="hide">
+  <div class="sh"><span id="shT"></span><button id="shX" style="color:#fff;font-size:20px;line-height:1">&times;</button></div>
+  <div class="sb"><img id="shImg" alt="Review sheet"></div>
+</div>
+
+<div id="pt" class="hide"><div class="ptin"><div class="pth"><span>Periodic Table of the Elements</span><button class="ptx" id="ptX">Close</button></div><div class="ptg" id="ptG"></div></div></div>
+
+<script src="topics.js"></script>
+<script src="sets.js"></script>
+<script src="sets2.js"></script>
+<script src="sets3.js"></script>
+<script src="sets4.js"></script>
+<script src="sets_cars.js"></script>
+
+<script src="sets_v3_enz.js"></script>
+<script src="passages_v2.js"></script>
+<script src="whys.js"></script>
+<script src="notes.js"></script>
+<script src="ptable.js"></script><script src="app.js"></script>
+</body></html>

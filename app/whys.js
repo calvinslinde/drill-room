@@ -1,0 +1,87 @@
+/* Per-choice reasoning, keyed by set id → question index → [A,B,C,D].
+   Backfilled first for the sets already completed. Others fall back to the
+   full explanation until written. */
+const WHYS = {
+
+bb_renal:{
+0:["<strong>No.</strong> Primary active transport means the protein itself hydrolyzes ATP. NKCC2 does not — this choice is placed here because the transporter is <em>essential</em> to the gradient, and importance feels like it should mean primary.",
+   "<strong>Correct.</strong> NKCC2 moves all four ions using the inward Na⁺ gradient the basolateral Na⁺/K⁺-ATPase maintains. Energy is spent elsewhere and borrowed here — the definition of secondary active transport.",
+   "<strong>No.</strong> K⁺ is moved <em>against</em> its gradient into the cell, so this cannot be passive. A uniporter also carries one species; NKCC2 carries four at once.",
+   "<strong>No.</strong> It is not gated by ligand binding at all. Its activity is set by the ion gradients available to it, and hormones regulate how many copies sit in the membrane rather than switching each one open."],
+1:["<strong>Correct.</strong> The thick ascending limb builds the gradient, so blocking it collapses the interstitium to 400. ADH at V2 only spends the gradient, so blocking it leaves 1150 intact. Build and spend are separable steps.",
+   "<strong>No.</strong> Neither compound targets vasculature. Medullary blood flow does affect the gradient — that is the vasa recta's job — but nothing here changes it.",
+   "<strong>No.</strong> The descending limb has no pumps. It is water-permeable and salt-impermeable, so it equilibrates passively with whatever the interstitium already is.",
+   "<strong>No.</strong> The passage specifies steady state for all groups. This is the answer for someone who assumes both compounds must eventually do the same thing."],
+2:["<strong>Correct.</strong> Filtrate leaves the ascending limb near 100, and the distal nephron keeps pulling Na⁺ out. Without aquaporins water cannot follow, so it grows <em>more</em> dilute on the way down — reaching 80.",
+   "<strong>No.</strong> V2 receptors are on the collecting duct, not the glomerulus. Nothing here raises filtration rate.",
+   "<strong>No.</strong> Distal Na⁺ reabsorption continues — and it is precisely that continued salt removal, with water trapped, that produces urine more dilute than the 150 seen under Compound A.",
+   "<strong>No.</strong> Urea recycling contributes to the deep medullary gradient, but it is not reversed by V2 blockade, and the table shows that gradient nearly intact at 1150."],
+3:["<strong>Half right, and that is the trap.</strong> Concentration is impaired, but stopping here misses that the ascending limb is also the diluting segment.",
+   "<strong>Half right in the other direction.</strong> Dilution is impaired, but the gradient needed to concentrate is gone too.",
+   "<strong>Correct.</strong> One segment does two jobs: it pumps salt into the interstitium (enabling concentration downstream) and removes salt while water stays behind (producing dilute filtrate). Block NKCC2 and both directions fail.",
+   "<strong>No.</strong> The distal nephron fine-tunes; it cannot rebuild a medullary gradient. Table 1 shows the interstitium at 400 despite everything downstream being intact."],
+4:["<strong>Backwards.</strong> A loop agent delivers <em>more</em> Na⁺ distally, which drives more K⁺ secretion — this is why loop diuretics cause hypokalemia, the opposite of the question.",
+   "<strong>No.</strong> V2 blockade affects water handling, not the electrical driving force for K⁺ secretion. Potassium is largely unaffected.",
+   "<strong>Correct.</strong> Na⁺ entering through ENaC leaves the lumen relatively negative, and that negativity pulls K⁺ out of the cell. Block ENaC and the driving force disappears, so K⁺ is retained — how amiloride spares potassium.",
+   "<strong>No.</strong> The three compounds act at different points and have opposite effects on K⁺. A and C in particular move it in opposite directions."],
+5:["<strong>No.</strong> Solute and water entering together is exactly the problem — the interstitium receives both and its osmolarity is diluted, not raised.",
+   "<strong>Correct.</strong> Water impermeability is the precondition for the gradient existing. If water follows the pumped salt, the interstitium dilutes itself back toward isotonic and nothing accumulates.",
+   "<strong>The trap.</strong> The pump does still run, but its output is neutralized on arrival. Preserving NKCC2 is not enough if what it moves is immediately diluted.",
+   "<strong>No.</strong> The effect is not regional. Every level of the medulla depends on salt accumulating without water, so the whole gradient collapses."]
+},
+
+ps_learn:{
+0:["<strong>No.</strong> Fixed ratio is Group II — every 10th press, a fixed requirement. Group IV's requirement varies.",
+   "<strong>Correct.</strong> It counts responses (ratio) with an unpredictable requirement (variable). The two-question test: responses or time? fixed or varying?",
+   "<strong>No.</strong> Fixed interval is Group III — the first press after 60 seconds. That counts time, not presses.",
+   "<strong>No.</strong> Variable interval would mean an unpredictable amount of <em>time</em>. Group IV specifies an average number of presses."],
+1:["<strong>Backwards.</strong> Group I was reinforced every time and extinguished fastest, at 85 presses — the lowest number in the column.",
+   "<strong>Correct.</strong> The partial reinforcement extinction effect. Under continuous reinforcement the switch to nothing is instantly obvious; under variable schedules a dry run is indistinguishable from normal, so responding persists.",
+   "<strong>No.</strong> Group IV (variable ratio, 790) beat Group III (fixed interval, 210) decisively. Ratio schedules did not lose.",
+   "<strong>No.</strong> The column ranges from 85 to 790 — a ninefold spread that tracks schedule type closely."],
+2:["<strong>Correct.</strong> On a ratio schedule, pressing twice as fast earns twice the reinforcement. The contingency itself rewards speed.",
+   "<strong>No.</strong> Group III (interval) had the <em>lower</em> rate, 190 vs 610. Unpredictability alone does not raise rate.",
+   "<strong>No.</strong> Group IV was variable and still high at 580. Fixed versus variable governs the pattern of responding, not the overall rate.",
+   "<strong>No.</strong> Deprivation was not manipulated. This attributes to the animals what the schedule explains."],
+3:["<strong>No.</strong> The unconditioned stimulus is the food, which produces approach without any learning.",
+   "<strong>Correct.</strong> A neutral stimulus paired with the US becomes a conditioned stimulus, and approach to the tray becomes the conditioned response.",
+   "<strong>No.</strong> A primary reinforcer satisfies a biological need directly — again, the food. A tone satisfies nothing.",
+   "<strong>No.</strong> Nothing is punished here, and the tone predicts food rather than signalling when a response will be punished."],
+4:["<strong>This is the trap, and it is your logged lapse zone.</strong> Dishabituation requires a <em>novel second stimulus</em> to interrupt an established habituation. Nothing intervened here — only 48 hours passed. If you cannot point at the interrupting stimulus, it is not dishabituation.",
+   "<strong>Correct.</strong> Spontaneous recovery is the return of an extinguished response after a rest interval with no further pairings. It shows extinction suppresses the association rather than erasing it.",
+   "<strong>No.</strong> Generalization would mean responding to a <em>different</em> tone. The same tone was used throughout.",
+   "<strong>No.</strong> Reconditioning requires re-pairing the tone with food. The passage specifies no exposure at all during the 48 hours."]
+},
+
+cp_acid:{
+0:["<strong>Backwards.</strong> Distance from the working pH is what makes a buffer <em>weak</em> there. Acetate's pKa is 2.6 units away, and Table 1 shows it collapsing by 2.41 after only 5 mL.",
+   "<strong>Correct.</strong> pKa 7.21 is nearest the working pH of 7.40, and the data confirm it: only −0.11 after 5 mL, an order of magnitude better than acetate.",
+   "<strong>No.</strong> Highest pKa is not best — ammonium's 9.25 is 1.85 units above 7.40 and it performs poorly (−1.87).",
+   "<strong>The trap.</strong> Bicarbonate <em>is</em> the dominant physiological buffer, but for a reason this closed-vessel experiment cannot show. In the beaker, phosphate beats it."],
+1:["<strong>No.</strong> This inverts the ratio — 7.21 − 1. The conjugate base belongs in the numerator, and getting that backwards is the single most common error on Henderson–Hasselbalch.",
+   "<strong>No.</strong> This is the pKa itself, which would require equal concentrations of acid and base. Here they differ tenfold.",
+   "<strong>Correct.</strong> [A⁻]/[HA] = 0.20/0.020 = 10, and log 10 = 1, so pH = 7.21 + 1 = 8.21.",
+   "<strong>No.</strong> This would need a 100-fold ratio. Check the powers of ten: 0.20 to 0.020 is one order, not two."],
+2:["<strong>Wrong titrant.</strong> The passage says HCl, which adds H⁺. This choice reasons about added base.",
+   "<strong>Correct.</strong> At pH 7.40 acetate is >99% in the base form. It can absorb H⁺, but converting base to acid from such an extreme starting ratio swings the log term violently, so pH crashes.",
+   "<strong>No.</strong> Equimolar is the <em>most</em> effective ratio, which is exactly why capacity peaks at pH = pKa. This states the principle backwards.",
+   "<strong>No.</strong> Acetic acid is a weak acid — that is what makes an acetate buffer possible at all."],
+3:["<strong>Correct.</strong> Exhaling CO₂ removes a product, so the reaction never settles at equilibrium and bicarbonate keeps consuming H⁺. An open system escapes the constraint that limits everything in Table 1.",
+   "<strong>No.</strong> Table 1 shows it buffering perfectly well at pH 7.40 — better than acetate or ammonium.",
+   "<strong>The trap, and a natural one.</strong> Something must change to explain the discrepancy, so an altered pKa feels right. But pKa is a fixed property of the acid. What changes is whether the system is closed.",
+   "<strong>No.</strong> Carbonic anhydrase speeds the interconversion, but the passage attributes the difference specifically to CO₂ being exhaled, not to catalysis."],
+4:["<strong>No.</strong> Temperature affects accuracy generally, but it is not a competing explanation for why buffers with different pKa values behaved differently.",
+   "<strong>Correct.</strong> Capacity depends on pKa <em>and</em> total buffer concentration. If one solution were more concentrated it would resist more regardless of pKa — the only alternative explanation for the pattern.",
+   "<strong>No.</strong> The same HCl went into every solution, so any error there applies equally and cannot produce differences between them.",
+   "<strong>No.</strong> Same reasoning — a miscalibrated electrode shifts all readings together and does not explain the ranking."],
+5:["<strong>No.</strong> Every acid donates a proton to water by definition. True of both, so it cannot distinguish them.",
+   "<strong>Correct.</strong> Essentially complete dissociation is the defining property, and why strong acids have no meaningful Ka.",
+   "<strong>No.</strong> Every acid has a conjugate base — the species left after the proton leaves. True of both.",
+   "<strong>No.</strong> Weak acid solutions conduct too, just less. A difference of degree, not of kind."],
+6:["<strong>The reflex answer.</strong> 10⁻³ is [H⁺] itself, not Ka. Under time pressure this is the number already in front of you, which is why it is placed first.",
+   "<strong>Correct.</strong> Ka ≈ [H⁺]²/[HA] = (10⁻³)²/10⁻¹ = 10⁻⁶/10⁻¹ = 10⁻⁵. Squaring doubles the exponent; dividing subtracts it.",
+   "<strong>No.</strong> This is [H⁺]² without dividing by the acid concentration — one step short.",
+   "<strong>No.</strong> Off by two orders. Worth a sanity check: a pH of 3.0 from a 0.1 M solution is a fairly strong weak acid, so Ka should not be this small."]
+}
+
+};
